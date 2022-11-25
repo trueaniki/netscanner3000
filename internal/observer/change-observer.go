@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Evencaster/netscanner3000/pkg/scanner"
+	"github.com/Evencaster/netscanner3000/internal/scanner"
 )
 
 type ChangeObserver struct {

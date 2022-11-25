@@ -4,9 +4,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/Evencaster/netscanner3000/pkg/daemon"
-	"github.com/Evencaster/netscanner3000/pkg/scanner"
 	"gopkg.in/yaml.v2"
+	"github.com/Evencaster/netscanner3000/internal/daemon"
+	"github.com/Evencaster/netscanner3000/internal/scanner"
 )
 
 func Parse(filepath string) (c Config) {

@@ -3,8 +3,8 @@ package daemon
 import (
 	"time"
 
-	"github.com/Evencaster/netscanner3000/pkg/observer"
-	"github.com/Evencaster/netscanner3000/pkg/scanner"
+	"github.com/Evencaster/netscanner3000/internal/observer"
+	"github.com/Evencaster/netscanner3000/internal/scanner"
 )
 
 type Daemon struct {
