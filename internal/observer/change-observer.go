@@ -2,16 +2,22 @@ package observer
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
+	"github.com/Evencaster/netscanner3000/internal/notifier"
 	"github.com/Evencaster/netscanner3000/internal/scanner"
 )
 
 type ChangeObserver struct {
-	state map[scanner.ScannerID]scanner.PortsData
+	Notifyier notifier.Notifier
+	state     map[scanner.ScannerID]scanner.PortsData
 }
 
 func (o *ChangeObserver) Receive(scannerID scanner.ScannerID, data scanner.PortsData) {
+	if o.state == nil {
+		o.state = make(map[scanner.ScannerID]scanner.PortsData)
+	}
 	prevState := o.state[scannerID]
 	newState := data
 	changes := []string{}
@@ -20,17 +26,18 @@ func (o *ChangeObserver) Receive(scannerID scanner.ScannerID, data scanner.Ports
 		if newState[port] != prevPortState {
 			changes = append(
 				changes,
-				fmt.Sprintf("Port %d was %t, become %t", port, prevPortState, newState[port]),
+				fmt.Sprintf("Port %d was %t, become %t \n", port, prevPortState, newState[port]),
 			)
 		}
+	}
+	if o.state[scannerID] == nil {
+		o.state[scannerID] = make(scanner.PortsData)
 	}
 	o.state[scannerID] = newState
 
 	if len(changes) != 0 {
-		o.notify(strings.Join(changes, "\n"))
+		if err := o.Notifyier.Notify(strings.Join(changes, "\n")); err != nil {
+			log.Fatal(err)
+		}
 	}
-}
-
-func (o *ChangeObserver) notify(m string) {
-
 }

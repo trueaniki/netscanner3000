@@ -1,23 +1,14 @@
 daemon:
-  interval: 30s
+  cron: "*/1 * * * *"
 scanners:
-  - host: google.com
-    startPort: 75
-    endPort: 85
-    networks:
-      - tcp
-    timeout: 5s
   - host: localhost
-    startPort: 8080
-    endPort: 8083
-    networks:
-      - tcp
+  # - cidr: "127.0.0.0/8"
+    startPort: 3000
+    endPort: 3003
+    timeout: 3s
+    protocol: tcp
 observers:
   onChange:
     - notify:
-        smtp:
-          from: from@example.com
-          password: 123
-          to: to@example.com
-          smtpHost: example.com
-          smtpPort: 587
+        file:
+          output: ./results.txt

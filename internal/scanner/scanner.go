@@ -15,17 +15,25 @@ type Scanner struct {
 	Adress    string
 	StartPort int
 	EndPort   int
-	Network   string
+	Protocol  string
 	Timeout   time.Duration
+}
+
+type Runnable interface {
+	Run() PortsData
 }
 
 func (s *Scanner) connect(port int) bool {
 	addr := fmt.Sprintf("%s:%d", s.Adress, port)
-	_, err := net.DialTimeout(s.Network, addr, 5*time.Second)
+	_, err := net.DialTimeout(s.Protocol, addr, s.Timeout)
 	return err == nil
 }
 
 func (s *Scanner) Run() (res PortsData) {
+	return s.runSync()
+}
+
+func (s *Scanner) runAsync() (res PortsData) {
 	m := sync.Mutex{}
 	res = make(PortsData)
 
@@ -41,5 +49,15 @@ func (s *Scanner) Run() (res PortsData) {
 		}(p)
 	}
 	wg.Wait()
+	return
+}
+
+func (s *Scanner) runSync() (res PortsData) {
+	res = make(PortsData)
+	for p := s.StartPort; p <= s.EndPort; p++ {
+		isOpen := s.connect(p)
+		res[p] = isOpen
+	}
+
 	return
 }
